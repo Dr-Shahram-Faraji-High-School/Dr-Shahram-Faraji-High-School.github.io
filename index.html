@@ -4,37 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>آرشیو کامپیوتری‌ها | هنرستان دکتر شهرام فرجی</title>
-    <!-- Tailwind CSS + Font Awesome + Vazir Font -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Custom Vazir Font (وزیر) -->
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <style>
         * {
             font-family: 'Vazirmatn', 'Tahoma', system-ui, sans-serif;
         }
         body {
             overflow-x: hidden;
-            background-color: #0a0a0a;
             transition: background-color 0.3s ease, color 0.2s ease;
         }
-        /* Smooth scroll behavior */
         html {
             scroll-behavior: smooth;
         }
-        /* Zoom out effect on scroll (parallax & scale) */
-        .zoom-wrapper {
-            transition: transform 0.1s linear;
+
+        /* Hero Section */
+        .hero-section {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-zoom-wrapper {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            transition: transform 0.08s linear;
             will-change: transform;
+            transform-origin: center top;
         }
-        /* Custom orange/white dark mode overrides */
-        .dark-bg-gradient {
-            background: radial-gradient(circle at 20% 30%, rgba(249, 115, 22, 0.08), transparent 70%);
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.08s linear, opacity 0.08s linear;
+            will-change: transform, opacity;
+            transform-origin: center top;
         }
-        .light-bg-gradient {
-            background: radial-gradient(circle at 20% 30%, rgba(249, 115, 22, 0.05), transparent 70%);
-        }
-        /* Floating big icons behind text (pseudo or absolute) */
+
+        /* Icons behind text */
         .big-icon-bg {
             position: relative;
             isolation: isolate;
@@ -44,10 +56,10 @@
             position: absolute;
             inset: 0;
             z-index: -1;
-            opacity: 0.1;
+            opacity: 0.12;
             background-repeat: no-repeat;
             background-position: center;
-            background-size: 180px;
+            background-size: 200px;
             pointer-events: none;
         }
         .icon-code::before {
@@ -56,22 +68,8 @@
         .icon-archive::before {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23f97316' d='M32 32H480c17.7 0 32 14.3 32 32V96c0 17.7-14.3 32-32 32H32C14.3 128 0 113.7 0 96V64C0 46.3 14.3 32 32 32zm0 128H480V416c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V160zm128 80c0 8.8 7.2 16 16 16H336c8.8 0 16-7.2 16-16s-7.2-16-16-16H176c-8.8 0-16 7.2-16 16z'/%3E%3C/svg%3E");
         }
-        .glass-card {
-            background: rgba(20, 20, 25, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(249, 115, 22, 0.2);
-            transition: all 0.3s;
-        }
-        .glass-card-light {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(249, 115, 22, 0.3);
-        }
-        .hover-orange:hover {
-            border-color: #f97316;
-            box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.2);
-        }
-        /* scroll bar orange */
+
+        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -82,309 +80,299 @@
             background: #f97316;
             border-radius: 10px;
         }
+        body:not(.dark) ::-webkit-scrollbar-track {
+            background: #ffefe0;
+        }
+
+        /* Transitions */
+        .card-transition {
+            transition: all 0.25s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            border-color: #f97316 !important;
+            box-shadow: 0 20px 25px -12px rgba(249, 115, 22, 0.25);
+        }
     </style>
 </head>
-<body class="antialiased transition-colors duration-300" id="app">
+<body class="antialiased transition-colors duration-300">
 
-    <!-- Main container with zoom-out effect on scroll -->
-    <div class="zoom-wrapper fixed top-0 left-0 w-full will-change-transform" style="transform-origin: center top; z-index: 0;"></div>
-    
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 transition-all duration-500" id="contentContainer">
-        
-        <!-- Hero Section with big icon behind text -->
-        <div class="relative big-icon-bg icon-code rounded-3xl p-6 md:p-12 mb-12 md:mb-20 overflow-hidden">
-            <div class="relative text-center md:text-right">
-                <div class="inline-flex items-center justify-center gap-3 bg-orange-600/20 text-orange-500 rounded-full px-4 py-1.5 text-sm font-medium backdrop-blur-sm mb-6">
-                    <i class="fab fa-github text-orange-400"></i>
-                    <span>GitHub Organization | هنرستان دکتر شهرام فرجی</span>
-                </div>
-                <h1 class="text-4xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-tight">
-                    <span class="bg-gradient-to-l from-white via-orange-200 to-orange-500 bg-clip-text text-transparent dark:from-white dark:via-orange-300 dark:to-orange-400">آرشیو ۳ سال</span><br>
-                    <span class="text-orange-500">با کامپیوتری‌ها!</span>
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-300 dark:text-gray-200 max-w-3xl mt-6 leading-relaxed">
-                    به مخزن رسمی پروژه‌های هنرستان دکتر شهرام فرجی خوش آمدید
-                </p>
-                <div class="mt-8 flex flex-wrap gap-4 justify-center md:justify-start">
-                    <a href="#about" class="px-6 py-3 bg-orange-600 hover:bg-orange-700 transition rounded-xl font-semibold shadow-lg shadow-orange-600/30 flex items-center gap-2"><i class="fas fa-folder-open"></i> مشاهده پروژه‌ها</a>
-                    <a href="#join" class="px-6 py-3 bg-gray-800/80 backdrop-blur border border-orange-500/40 rounded-xl font-semibold hover:bg-orange-500/20 transition flex items-center gap-2"><i class="fab fa-github"></i> مشارکت در گیت‌هاب</a>
+    <!-- Hero Section -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-zoom-wrapper" id="heroZoomBg"></div>
+        <div class="hero-content" id="heroContent">
+            <div class="relative big-icon-bg icon-code rounded-3xl p-6 md:p-12 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="relative text-center md:text-right">
+                        <a href="https://github.com/Dr-Shahram-Faraji-High-School/discussions/1" target="_blank"
+                        class="inline-flex items-center justify-center gap-3 bg-orange-600/20 text-orange-500 rounded-full px-4 py-1.5 text-sm font-medium backdrop-blur-sm mb-6 hover:bg-orange-600/30 transition">
+
+                            <i class="fab fa-github text-orange-400"></i>
+                            <span>GitHub Organization | هنرستان دکتر شهرام فرجی</span>
+                        </a>
+                    <h1 class="text-4xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-tight">
+                        <span class="bg-gradient-to-l from-orange-100 via-orange-300 to-orange-600 bg-clip-text text-transparent">آرشیو ۳ سال</span><br>
+                        <span class="text-orange-600 dark:text-orange-400">با کامپیوتری‌ها!</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 max-w-3xl mt-6 leading-relaxed">
+                        به مخزن رسمی پروژه‌های هنرستان دکتر شهرام فرجی خوش آمدید
+                    </p>
+                    <div class="mt-8 flex flex-wrap gap-4 justify-center md:justify-start">
+                        <a href="https://github.com/orgs/Dr-Shahram-Faraji-High-School/repositories" class="px-6 py-3 bg-orange-600 hover:bg-orange-700 transition rounded-xl font-semibold shadow-lg shadow-orange-600/30 flex items-center gap-2 text-white"><i class="fas fa-folder-open"></i> مشاهده پروژه‌ها</a>
+                        <a href="https://github.com/Dr-Shahram-Faraji-High-School" class="px-6 py-3 bg-white/90 dark:bg-gray-800/80 backdrop-blur border border-orange-500/40 rounded-xl font-semibold hover:bg-orange-500/20 transition flex items-center gap-2 text-gray-800 dark:text-white"><i class="fab fa-github"></i> مشارکت در گیت‌هاب</a>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- About Section: اهداف و توضیحات -->
+    <!-- Main Content -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10" id="contentContainer">
+
+        <!-- About Section -->
         <div id="about" class="grid md:grid-cols-2 gap-8 mb-20">
-            <div class="bg-black/30 dark:bg-white/5 rounded-2xl p-6 md:p-8 border border-orange-500/20 backdrop-blur-sm hover:border-orange-500/50 transition">
-                <div class="text-orange-500 text-4xl mb-4"><i class="fas fa-database"></i></div>
-                <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">📌 درباره این سازمان</h2>
-                <p class="text-gray-300 leading-relaxed mb-3">این سازمان در گیت‌هاب با هدف جمع‌آوری، نگهداری و آرشیو پروژه‌های دانش‌آموزان رشته کامپیوتر در طول ۳ سال تحصیلی هنرستان ایجاد شده است.</p>
-                <ul class="space-y-2 text-gray-200">
+            <div class="rounded-2xl p-6 md:p-8 border border-orange-500/30 backdrop-blur-sm card-transition hover-lift" id="card1">
+                    
+                    <h2 class="text-2xl font-bold mb-4 flex items-center gap-2 text-gray-800 dark:text-white">
+                        <i class="text-orange-500 text-4xl mb-4 fas fa-database"></i>
+                        درباره این سازمان
+                    
+                    </h2>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-3">این سازمان در گیت‌هاب با هدف جمع‌آوری، نگهداری و آرشیو پروژه‌های دانش‌آموزان رشته کامپیوتر در طول ۳ سال تحصیلی هنرستان ایجاد شده است.</p>
+                <ul class="space-y-2 text-gray-700 dark:text-gray-200">
                     <li class="flex items-start gap-2"><i class="fas fa-check-circle text-orange-500 mt-1"></i> <span>پروژه‌های درسی و تمرینی دانش‌آموزان را مشاهده کنید</span></li>
                     <li class="flex items-start gap-2"><i class="fas fa-chart-line text-orange-500 mt-1"></i> <span>پیشرفت آموزشی در طول سال‌ها را دنبال کنید</span></li>
                     <li class="flex items-start gap-2"><i class="fas fa-code text-orange-500 mt-1"></i> <span>نمونه‌کارهای برنامه‌نویسی و نرم‌افزاری را بررسی کنید</span></li>
                     <li class="flex items-start gap-2"><i class="fas fa-users text-orange-500 mt-1"></i> <span>در مسیر یادگیری با دیگران همکاری داشته باشید</span></li>
                 </ul>
             </div>
-            <div class="bg-black/30 dark:bg-white/5 rounded-2xl p-6 md:p-8 border border-orange-500/20 backdrop-blur-sm hover:border-orange-500/50 transition">
-                <div class="text-orange-500 text-4xl mb-4"><i class="fas fa-bullseye"></i></div>
-                <h2 class="text-2xl font-bold mb-4">📁 هدف ما</h2>
+            <div class="rounded-2xl p-6 md:p-8 border border-orange-500/30 backdrop-blur-sm card-transition hover-lift">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
+                    <i class="text-orange-500 text-4xl mb-4 fas fa-bullseye"></i>
+                    
+                    هدف ما
+                </h2>
                 <div class="grid grid-cols-2 gap-4 mt-2">
-                    <div class="bg-orange-500/10 p-3 rounded-xl text-center"><i class="fas fa-archive text-orange-400 text-2xl mb-2 block"></i>📦 آرشیو کامل ۳ سال تحصیل</div>
-                    <div class="bg-orange-500/10 p-3 rounded-xl text-center"><i class="fas fa-laptop-code text-orange-400 text-2xl mb-2 block"></i>💻 ثبت پروژه‌های برنامه‌نویسی</div>
-                    <div class="bg-orange-500/10 p-3 rounded-xl text-center"><i class="fas fa-handshake text-orange-400 text-2xl mb-2 block"></i>🤝 ایجاد فضای همکاری و یادگیری</div>
-                    <div class="bg-orange-500/10 p-3 rounded-xl text-center"><i class="fas fa-seedling text-orange-400 text-2xl mb-2 block"></i>🌱 رشد مهارت‌های عملی در حوزه کامپیوتر</div>
+                    <div class="bg-orange-500/10 dark:bg-orange-500/15 p-3 rounded-xl text-center text-gray-700 dark:text-gray-200"><i class="fas fa-archive text-orange-500 text-2xl mb-2 block"></i>آرشیو کامل ۳ سال تحصیل</div>
+                    <div class="bg-orange-500/10 dark:bg-orange-500/15 p-3 rounded-xl text-center text-gray-700 dark:text-gray-200"><i class="fas fa-laptop-code text-orange-500 text-2xl mb-2 block"></i>ثبت پروژه‌های برنامه‌نویسی</div>
+                    <div class="bg-orange-500/10 dark:bg-orange-500/15 p-3 rounded-xl text-center text-gray-700 dark:text-gray-200"><i class="fas fa-handshake text-orange-500 text-2xl mb-2 block"></i>ایجاد فضای همکاری و یادگیری</div>
+                    <div class="bg-orange-500/10 dark:bg-orange-500/15 p-3 rounded-xl text-center text-gray-700 dark:text-gray-200"><i class="fas fa-seedling text-orange-500 text-2xl mb-2 block"></i>رشد مهارت‌ عملی در حوزه کامپیوتر</div>
                 </div>
             </div>
         </div>
 
-        <!-- Invitation & teachers section (special thanks) -->
+        <!-- Teachers Section -->
         <div class="relative big-icon-bg icon-archive rounded-3xl p-8 my-16 overflow-hidden">
-            <div class="relative z-2">
+            <div class="relative">
                 <div class="text-center md:text-right">
-                    <h2 class="text-3xl font-bold flex items-center justify-center md:justify-start gap-3"><i class="fas fa-chalkboard-user text-orange-500"></i> 👨‍🏫 تشکر ویژه از معلمان</h2>
-                    <p class="text-gray-300 mt-3 max-w-2xl">از زحمات بی‌وقفه معلمان عزیز رشته کامپیوتر که نقش مهمی در آموزش و رشد دانش‌آموزان دارند صمیمانه تشکر می‌کنیم:</p>
+                    <h2 class="text-3xl font-bold flex items-center justify-center md:justify-start gap-3 text-gray-800 dark:text-white"><i class="fas fa-chalkboard-user text-orange-500"></i> تشکر ویژه از معلمان</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mt-3 max-w-2xl">از زحمات بی‌وقفه معلمان عزیز رشته کامپیوتر که نقش مهمی در آموزش و رشد دانش‌آموزان دارند صمیمانه تشکر می‌کنیم:</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-8">
-                    <div class="bg-gray-900/70 rounded-xl p-5 text-center border border-orange-500/30"><i class="fas fa-user-graduate text-orange-500 text-3xl mb-2 block"></i><span class="font-bold text-lg">مهندس رضایی</span><br><span class="text-sm text-orange-300">مبانی برنامه‌نویسی</span></div>
-                    <div class="bg-gray-900/70 rounded-xl p-5 text-center border border-orange-500/30"><i class="fas fa-user-astronaut text-orange-500 text-3xl mb-2 block"></i><span class="font-bold text-lg">دکتر کریمی</span><br><span class="text-sm text-orange-300">هوش مصنوعی و پایتون</span></div>
-                    <div class="bg-gray-900/70 rounded-xl p-5 text-center border border-orange-500/30"><i class="fas fa-laptop text-orange-500 text-3xl mb-2 block"></i><span class="font-bold text-lg">مهندس نوروزی</span><br><span class="text-sm text-orange-300">توسعه وب و دیتابیس</span></div>
+                    <div class="bg-white/80 dark:bg-gray-800/80 rounded-xl p-5 text-center border border-orange-500/30 shadow-sm"><i class="fas fa-user-graduate text-orange-500 text-3xl mb-2 block"></i><span class="font-bold text-lg text-gray-800 dark:text-white">استاد وحدانی</span><br><span class="text-sm text-orange-600 dark:text-orange-400">مبانی برنامه‌نویسی</span></div>
+                    <div class="bg-white/80 dark:bg-gray-800/80 rounded-xl p-5 text-center border border-orange-500/30 shadow-sm"><i class="fas fa-user-astronaut text-orange-500 text-3xl mb-2 block"></i><span class="font-bold text-lg text-gray-800 dark:text-white">استاد امیر جمالی وند</span><br><span class="text-sm text-orange-600 dark:text-orange-400">هوش مصنوعی و پایتون</span></div>
+                    <div class="bg-white/80 dark:bg-gray-800/80 rounded-xl p-5 text-center border border-orange-500/30 shadow-sm"><i class="fas fa-laptop text-orange-500 text-3xl mb-2 block"></i><span class="font-bold text-lg text-gray-800 dark:text-white">استاد حامد شریفی</span><br><span class="text-sm text-orange-600 dark:text-orange-400">توسعه وب و دیتابیس</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- دعوت به همکاری & مشارکت -->
+        <!-- Collaboration -->
         <div class="grid md:grid-cols-2 gap-8 my-16" id="join">
-            <div class="bg-gradient-to-br from-orange-900/20 to-transparent p-6 rounded-2xl border-r-4 border-orange-500">
-                <i class="fas fa-user-plus text-4xl text-orange-500 mb-3"></i>
-                <h3 class="text-2xl font-bold">👨‍🎓 دعوت به همکاری</h3>
-                <p class="mt-2 text-gray-300">از تمام دانش‌آموزان، فارغ‌التحصیلان و علاقه‌مندان دعوت می‌کنیم به این سازمان بپیوندند و پروژه‌های خود را در اینجا ثبت کنند. اگر در این هنرستان درس خوانده‌اید یا می‌خوانید، اینجا خانه دیجیتال شماست ❤️</p>
-                <div class="mt-5 flex gap-3 flex-wrap">
-                    <span class="inline-flex items-center gap-1 bg-orange-500/20 px-3 py-1 rounded-full text-sm"><i class="fab fa-github"></i> github.com/dr-shahram-faraji</span>
+            <div class="bg-gradient-to-br from-orange-500/10 to-transparent p-6 rounded-2xl border-r-4 border-orange-500">
+
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-user-plus text-2xl text-orange-500"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white">
+                        دعوت به همکاری
+                    </h3>
                 </div>
+
+                <p class="mt-2 text-gray-600 dark:text-gray-300">
+                    از تمام دانش‌آموزان، فارغ‌التحصیلان و علاقه‌مندان دعوت می‌کنیم به این سازمان بپیوندند و پروژه‌های خود را در اینجا ثبت کنند. اگر در این هنرستان درس خوانده‌اید یا می‌خوانید، اینجا خانه دیجیتال شماست
+                </p>
+
+                <div class="mt-5 flex gap-3 flex-wrap">
+                    <a href="https://github.com/Dr-Shahram-Faraji-High-School/discussions/1" target="_blank"
+                    class="inline-flex items-center gap-1 bg-orange-500/20 px-3 py-1 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-500/30 transition">
+                        <i class="fab fa-github"></i>
+                        github.com/dr-shahram-faraji
+                    </a>
+                </div>
+
             </div>
-            <div class="bg-gradient-to-bl from-gray-800/40 to-transparent p-6 rounded-2xl border-l-4 border-orange-500">
-                <i class="fas fa-star-of-life text-4xl text-orange-500 mb-3"></i>
-                <h3 class="text-2xl font-bold">⭐ مشارکت</h3>
-                <p class="mt-2 text-gray-300">اگر می‌خواهید در این پروژه مشارکت داشته باشید:</p>
-                <ul class="list-disc list-inside mt-3 space-y-1 text-gray-200">
+            <div class="bg-gradient-to-bl from-gray-500/10 to-transparent p-6 rounded-2xl border-l-4 border-orange-500">
+
+                <div class="flex items-center gap-2 mb-3">
+                    <i class="fas fa-star-of-life text-2xl text-orange-500"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white">مشارکت</h3>
+                </div>
+
+                <p class="mt-2 text-gray-600 dark:text-gray-300">
+                    اگر می‌خواهید در این پروژه مشارکت داشته باشید:
+                </p>
+
+                <ul class="list-disc list-inside mt-3 space-y-1 text-gray-700 dark:text-gray-200">
                     <li>ریپوزیتوری‌های خود را اضافه کنید</li>
                     <li>پروژه‌ها را مستندسازی کنید</li>
                     <li>در بهبود این آرشیو کمک کنید</li>
                 </ul>
+
             </div>
         </div>
 
-        <!-- آینده پروژه + Timeline visual -->
-        <div class="my-20 bg-black/40 rounded-3xl p-6 md:p-10 backdrop-blur-sm border border-orange-500/20">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <!-- Future -->
+        <div class="my-20 bg-orange-500/5 dark:bg-black/30 rounded-3xl p-6 md:p-10 backdrop-blur-sm border border-orange-500/30">
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+
+                <!-- Text section -->
                 <div>
-                    <i class="fas fa-calendar-alt text-orange-500 text-5xl mb-2 block"></i>
-                    <h3 class="text-2xl font-bold">📅 آینده این پروژه</h3>
-                    <p class="text-gray-300 max-w-xl mt-2">این سازمان در طول هر سال تحصیلی به‌روز خواهد شد و پروژه‌های جدید به آن اضافه می‌شود تا یک آرشیو کامل و ماندگار از مسیر یادگیری دانش‌آموزان ایجاد شود.</p>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-calendar-alt text-orange-500 text-3xl"></i>
+                        <h3 class="text-2xl font-bold text-gray-800 dark:text-white">آینده این پروژه</h3>
+                    </div>
+
+                    <p class="text-gray-600 dark:text-gray-300 max-w-xl mt-2">
+                        این سازمان در طول هر سال تحصیلی به‌روز خواهد شد و پروژه‌های جدید به آن اضافه می‌شود تا یک آرشیو کامل و ماندگار از مسیر یادگیری دانش‌آموزان ایجاد شود.
+                    </p>
                 </div>
-                <div class="flex gap-3 text-orange-400 text-4xl">
+
+                <!-- Icons section -->
+                <div class="flex gap-3 text-orange-500 text-4xl shrink-0">
                     <i class="fas fa-code-branch"></i>
                     <i class="fas fa-arrow-right-long"></i>
                     <i class="fas fa-cloud-arrow-up"></i>
                 </div>
+
             </div>
         </div>
-
-        <!-- ارتباط و ساخته شده با عشق -->
+        <!-- Contact & Love -->
         <div class="grid md:grid-cols-2 gap-8 mt-12 pb-12">
             <div class="text-center md:text-right p-5 rounded-xl bg-orange-500/5">
-                <i class="fas fa-envelope-open-text text-orange-400 text-3xl mb-2"></i>
-                <h4 class="text-xl font-bold">📫 ارتباط</h4>
-                <p class="text-gray-300">برای همکاری یا پیشنهادات می‌توانید از طریق بخش Issues یا Discussions در ارتباط باشید.</p>
-                <div class="flex justify-center md:justify-start gap-4 mt-4">
-                    <i class="fab fa-github text-2xl text-orange-400"></i>
-                    <i class="fab fa-discord text-2xl text-orange-400"></i>
-                    <i class="fas fa-comments text-2xl text-orange-400"></i>
+
+                <!-- Title with icon -->
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+                    <i class="fas fa-envelope-open-text text-orange-500 text-2xl"></i>
+                    <h4 class="text-xl font-bold text-gray-800 dark:text-white">ارتباط</h4>
                 </div>
+
+                <p class="text-gray-600 dark:text-gray-300">
+                    برای همکاری یا پیشنهادات می‌توانید از طریق بخش Issues یا Discussions در ارتباط باشید.
+                </p>
+
             </div>
-            <div class="text-center p-5 rounded-xl bg-gradient-to-r from-orange-600/10 to-transparent flex flex-col items-center justify-center">
+            <div class="text-center p-5 rounded-xl bg-gradient-to-r from-orange-500/10 to-transparent flex flex-col items-center justify-center">
                 <i class="fas fa-heart text-orange-500 text-4xl animate-pulse"></i>
-                <p class="text-xl font-bold mt-2">✨ ساخته شده با عشق برای کامپیوتری ها!</p>
-                <span class="text-orange-300 text-sm">Dr. Shahram Faraji High School - Archive 3 years</span>
+                <p class="text-xl font-bold mt-2 text-gray-800 dark:text-white">ساخته شده با عشق برای کامپیوتری ها!</p>
+                <span class="text-orange-600 dark:text-orange-400 text-sm">Dr. Shahram Faraji High School - Archive 3 years</span>
             </div>
         </div>
 
-        <!-- Footer sample github repositories preview (نمایش نمادین) -->
-        <footer class="border-t border-orange-500/30 pt-8 mt-8 text-center text-gray-400 text-sm">
+        <!-- Footer -->
+        <footer class="border-t border-orange-500/30 pt-8 mt-8 text-center text-gray-500 dark:text-gray-400 text-sm">
             <div class="flex flex-wrap justify-center gap-6">
                 <span><i class="fab fa-github"></i> مخزن رسمی پروژه‌های هنرستان</span>
                 <span><i class="fas fa-code"></i> برنامه‌نویسی | پایتون | وب | سی شارپ</span>
                 <span><i class="fas fa-graduation-cap"></i> هنرستان دکتر شهرام فرجی</span>
             </div>
-            <p class="mt-4">© ۱۴۰۴ - آرشیو دیجیتال کامپیوتری‌ها | تمام پروژه‌ها تحت مجوز متن‌باز منتشر می‌شوند.</p>
+            <p class="mt-4">© ۱۴۰۵ - آرشیو دیجیتال کامپیوتری‌ها | تمام پروژه‌ها تحت مجوز متن‌باز منتشر می‌شوند.</p>
         </footer>
     </div>
 
-    <!-- Dark mode script (system based) & Scroll Zoom Out effect -->
     <script>
         (function() {
-            // dark mode based on system preference + manual class toggling on html/body
-            const htmlElement = document.documentElement;
+            // Dark mode based on system preference
             const updateTheme = (isDark) => {
                 if (isDark) {
                     document.body.classList.add('dark');
                     document.body.style.backgroundColor = '#0a0a0a';
-                    document.body.style.color = '#f3f4f6';
-                    // adjust background classes for container
-                    document.getElementById('contentContainer')?.classList.add('dark-bg-gradient');
-                    document.getElementById('contentContainer')?.classList.remove('light-bg-gradient');
                 } else {
                     document.body.classList.remove('dark');
-                    document.body.style.backgroundColor = '#fef9f0';
-                    document.body.style.color = '#1f2937';
-                    document.getElementById('contentContainer')?.classList.add('light-bg-gradient');
-                    document.getElementById('contentContainer')?.classList.remove('dark-bg-gradient');
+                    document.body.style.backgroundColor = '#fefaf5';
+                }
+                updateHeroBackground();
+            };
+
+            const updateHeroBackground = () => {
+                const heroBg = document.getElementById('heroZoomBg');
+                if (!heroBg) return;
+                const isDark = document.body.classList.contains('dark');
+                if (isDark) {
+                    heroBg.style.background = 'radial-gradient(ellipse at 30% 40%, #ea580c, #0a0a0a)';
+                } else {
+                    heroBg.style.background = 'radial-gradient(ellipse at 30% 40%, #ffb86b, #fff0e0)';
                 }
             };
+
             const darkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
-            const setThemeBySystem = (e) => {
-                updateTheme(e.matches);
-            };
+            const setThemeBySystem = (e) => updateTheme(e.matches);
             setThemeBySystem(darkModeMedia);
             darkModeMedia.addEventListener('change', setThemeBySystem);
 
-            // ZOOM OUT effect on scroll (page scale transform)
-            const zoomDiv = document.querySelector('.zoom-wrapper');
-            const maxScale = 1;
-            const minScale = 0.85;
-            let ticking = false;
-            
-            function updateZoom() {
-                const scrollY = window.scrollY;
-                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-                let progress = maxScroll > 0 ? scrollY / maxScroll : 0;
-                progress = Math.min(1, Math.max(0, progress));
-                // scale from 1 at top to 0.88 at bottom (subtle zoom out)
-                const scale = maxScale - (progress * 0.15);
-                const finalScale = Math.max(minScale, Math.min(maxScale, scale));
-                if (zoomDiv) {
-                    zoomDiv.style.transform = `scale(${finalScale})`;
-                    zoomDiv.style.opacity = `${1 - progress * 0.2}`;
+            // HERO ZOOM OUT EFFECT (only while scrolling within hero)
+            const heroSection = document.getElementById('heroSection');
+            const heroZoomWrapper = document.getElementById('heroZoomBg');
+            const heroContent = document.getElementById('heroContent');
+
+            if (heroSection && heroZoomWrapper && heroContent) {
+                let ticking = false;
+                
+                function updateHeroZoom() {
+                    const scrollY = window.scrollY;
+                    const heroHeight = heroSection.offsetHeight;
+                    let progress = Math.min(scrollY / heroHeight, 1);
+                    
+                    // Scale from 1 to 0.85
+                    const scale = 1 - (progress * 0.15);
+                    const finalScale = Math.max(0.85, Math.min(1, scale));
+                    
+                    heroZoomWrapper.style.transform = `scale(${finalScale})`;
+                    heroZoomWrapper.style.opacity = `${1 - progress * 0.4}`;
+                    
+                    heroContent.style.transform = `scale(${finalScale})`;
+                    heroContent.style.opacity = `${1 - progress * 0.2}`;
+                    
+                    ticking = false;
                 }
-                // Also adds blur effect to background
-                const mainContent = document.getElementById('contentContainer');
-                if (mainContent) {
-                    const blurAmount = progress * 2;
-                    mainContent.style.backdropFilter = `blur(${blurAmount * 0.3}px)`;
-                }
-                ticking = false;
-            }
-            
-            window.addEventListener('scroll', () => {
-                if (!ticking) {
-                    requestAnimationFrame(updateZoom);
-                    ticking = true;
-                }
-            });
-            updateZoom();
-            
-            // Additional: zoom wrapper background gradient style to give depth
-            if (zoomDiv) {
-                zoomDiv.style.height = '100vh';
-                zoomDiv.style.width = '100%';
-                zoomDiv.style.background = 'radial-gradient(ellipse at 30% 40%, #f97316, #0a0a0a)';
-                zoomDiv.style.zIndex = '-1';
-                zoomDiv.style.position = 'fixed';
-                zoomDiv.style.top = '0';
-                zoomDiv.style.left = '0';
-                zoomDiv.style.pointerEvents = 'none';
-            }
-            // update gradient on theme change
-            const observer = new MutationObserver(() => {
-                const isDarkMode = document.body.classList.contains('dark');
-                if (zoomDiv) {
-                    if (isDarkMode) {
-                        zoomDiv.style.background = 'radial-gradient(ellipse at 30% 40%, #f97316, #0a0a0a)';
-                    } else {
-                        zoomDiv.style.background = 'radial-gradient(ellipse at 30% 40%, #ffb347, #ffedd5)';
-                    }
-                }
-            });
-            observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-            // force initial set
-            if (document.body.classList.contains('dark')) {
-                zoomDiv.style.background = 'radial-gradient(ellipse at 30% 40%, #f97316, #0a0a0a)';
-            } else {
-                zoomDiv.style.background = 'radial-gradient(ellipse at 30% 40%, #ffb347, #ffedd5)';
-            }
-            
-            // Also adjust glass cards based on theme
-            const cards = document.querySelectorAll('.bg-black\\/30, .bg-gray-900\\/70');
-            const updateCardsForTheme = () => {
-                const isDark = document.body.classList.contains('dark');
-                cards.forEach(card => {
-                    if (isDark) {
-                        card.classList.add('glass-card');
-                        card.classList.remove('glass-card-light');
-                    } else {
-                        card.classList.add('glass-card-light');
-                        card.classList.remove('glass-card');
-                        card.style.backgroundColor = 'rgba(255,255,245,0.8)';
-                        card.style.color = '#1f2937';
+                
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        requestAnimationFrame(updateHeroZoom);
+                        ticking = true;
                     }
                 });
-            };
-            updateCardsForTheme();
-            const themeWatcher = new MutationObserver(updateCardsForTheme);
-            themeWatcher.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+                updateHeroZoom();
+            }
+
+            // Set initial background
+            updateHeroBackground();
+
+            // Watch for theme changes on body
+            const observer = new MutationObserver(() => {
+                updateHeroBackground();
+                // Update card backgrounds dynamically for light mode
+                const isDark = document.body.classList.contains('dark');
+                const cards = document.querySelectorAll('#card1, .rounded-2xl.border');
+                cards.forEach(card => {
+                    if (!isDark) {
+                        card.style.backgroundColor = 'rgba(255, 248, 240, 0.95)';
+                    } else {
+                        card.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+                    }
+                });
+            });
+            observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+            
+            // Initialize card backgrounds
+            const isDarkInit = document.body.classList.contains('dark');
+            const cardsInit = document.querySelectorAll('#card1, .rounded-2xl.border');
+            cardsInit.forEach(card => {
+                if (!isDarkInit) {
+                    card.style.backgroundColor = 'rgba(255, 248, 240, 0.95)';
+                } else {
+                    card.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+                }
+            });
         })();
     </script>
-    <!-- Additional style polish for light mode text readability -->
-    <style>
-        body:not(.dark) .text-gray-300 {
-            color: #374151 !important;
-        }
-        body:not(.dark) .text-gray-200 {
-            color: #1f2937 !important;
-        }
-        body:not(.dark) .bg-black\/30 {
-            background-color: rgba(255, 248, 235, 0.85) !important;
-            border-color: #f97316 !important;
-        }
-        body:not(.dark) .bg-gray-900\/70 {
-            background-color: rgba(255, 237, 213, 0.7) !important;
-        }
-        body:not(.dark) .border-orange-500\/20 {
-            border-color: #f97316 !important;
-        }
-        body:not(.dark) .bg-orange-500\/10 {
-            background-color: #fed7aa !important;
-            color: #7c2d12;
-        }
-        body:not(.dark) h1, body:not(.dark) h2, body:not(.dark) h3 {
-            color: #2d1b0e;
-        }
-        body:not(.dark) .bg-black\/40 {
-            background-color: #fff3e6;
-        }
-        body:not(.dark) .bg-gradient-to-br {
-            background: linear-gradient(135deg, #fff1e0, #fff8f0);
-        }
-        body:not(.dark) .rounded-2xl {
-            box-shadow: 0 5px 20px rgba(0,0,0,0.02);
-        }
-        body:not(.dark) footer .text-gray-400 {
-            color: #6b4c2c;
-        }
-        body:not(.dark) .zoom-wrapper {
-            background: radial-gradient(ellipse at 30% 40%, #ffbc6e, #fff3e6) !important;
-        }
-        body.dark .zoom-wrapper {
-            background: radial-gradient(ellipse at 30% 40%, #f97316, #0a0a0a) !important;
-        }
-        /* fix overflow for zoom wrapper */
-        .zoom-wrapper {
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 120vh;
-            transform-origin: center top;
-        }
-    </style>
 </body>
 </html>
